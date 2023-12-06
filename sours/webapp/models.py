@@ -11,3 +11,6 @@ class Task(models.Model):
     date_of_completion = models.DateField(null=True, blank=True , verbose_name='Дата выполнения')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')
+
+    def __str__(self):
+        return f'{self.pk}. {self.description}'
