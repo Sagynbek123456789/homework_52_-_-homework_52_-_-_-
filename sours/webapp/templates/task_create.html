@@ -4,20 +4,6 @@
 {% block content %}
     <h1>Создать задачу</h1>
     <form action="" method="POST">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label for="description" class="form-label">Описание</label>
-            <input type="text" class="form-control" name="description" id="description">
-        </div>
-        <select class="form-select" name="status" aria-label="Статус">
-            {% for status_choice in status_choices %}
-                <option value="{{ status_choice.0 }}">{{ status_choice.1 }}</option>
-            {% endfor %}
-        </select>
-        <div class="mb-3">
-            <label for="date_of_completion" class="form-label">Дата выполнения</label>
-            <input type="text" class="form-control" name="date_of_completion" id="date_of_completion">
-        </div>
-        <button type="submit" class="btn btn-primary">Создать</button>
+       {% include 'partial/task_form.html' with value_submit='Create' %}
     </form>
 {% endblock %}
