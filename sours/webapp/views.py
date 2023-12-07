@@ -10,8 +10,7 @@ def index_view(request):
 
 def task_view(request, *args, pk, **kwargs):
     task = get_object_or_404(Task, pk=pk)
-    return render(request, 'task_view.html',  {'task': task})
-
+    return render(request, 'task_view.html', {'task': task})
 
 
 def task_create_view(request):
@@ -26,13 +25,27 @@ def task_create_view(request):
         return redirect('index')
 
 
-def task_delete_view(request):
-    if request.method == 'POST':
-        task_id = request.POST.get('id')
-        task = Task.objects.get(id=task_id)
+def task_update_view(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if request.method == 'GET':
+        return render(request, 'task_update.html', {'status_choices': status_choices})
+    elif request.method == 'POST':
+        task.description = request.POST.get('description')
+        task.status = request.POST.get('status')
+        task.date_of_completion = request.POST.get('date_of_completion')
+        task.save()
+        return redirect('index')
+
+
+def task_delete_view(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if request.method == 'GET':
+        return render(request, 'task_delete.html', {'task': task})
+    elif request.method == 'POST':
         task.delete()
         return redirect('index')
 
 
-
 # Create your views here.
+# def task_create_view(request):
+#     return None
