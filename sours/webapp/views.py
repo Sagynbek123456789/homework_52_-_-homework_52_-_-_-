@@ -1,12 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from webapp.models import Task, status_choices
-from django.http import HttpResponseRedirect
 
 
 # Create your views here.
 def index_view(request):
     tasks = Task.objects.all()
     return render(request, 'index.html', {'tasks': tasks})
+
+
+def task_view(request, *args, pk, **kwargs):
+    task = get_object_or_404(Task, pk=pk)
+    return render(request, 'task_view.html',  {'task': task})
+
 
 
 def task_create_view(request):
@@ -18,7 +23,7 @@ def task_create_view(request):
             status=request.POST.get('status'),
             date_of_completion=request.POST.get('date_of_completion')
         )
-        return HttpResponseRedirect('/')
+        return redirect('index')
 
 
 def task_delete_view(request):
@@ -26,7 +31,7 @@ def task_delete_view(request):
         task_id = request.POST.get('id')
         task = Task.objects.get(id=task_id)
         task.delete()
-        return HttpResponseRedirect('/')
+        return redirect('index')
 
 
 
