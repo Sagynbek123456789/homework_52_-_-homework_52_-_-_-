@@ -17,12 +17,14 @@
                     <h6 class="card-subtitle mb-2 text-body-secondary">{{ task.get_status_display }}</h6>
                     <p class="card-text">{{ task.date_of_completion|date:'d.m.Y' }}</p>
                     <div class="d-flex">
-                        <form action="{% url 'task_delete' %}" method="POST">
+                        <form action="{% url 'task_delete_view' pk=task.pk %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="id" value="{{ task.id }}">
-                            <button type="submit" class="btn btn-danger">Удалить</button>
+{#                            <button type="submit" class="btn btn-danger">Удалить</button>#}
                         </form>
                         <a href="{% url 'task_view' pk=task.pk %}" class="btn btn-primary ms-2">Подробнее</a>
+                        <a href="{% url 'task_update_view' pk=task.pk %}" class="btn btn-primary ms-2">Редактировать</a>
+                        <a href="{% url 'task_delete_view' pk=task.pk %}" class="btn btn-primary ms-2">Удалить</a>
                     </div>
                 </div>
             </div>
