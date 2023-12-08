@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from webapp.models import Task, status_choices
 from webapp.validate_char_field import task_validate
+from webapp.forms import TaskForm
 
 
 # Create your views here.
@@ -16,24 +17,27 @@ def task_view(request, *args, pk, **kwargs):
 
 def task_create_view(request):
     if request.method == 'GET':
-        return render(request, 'task_create.html', {'status_choices': status_choices})
+        form = TaskForm()
+        return render(request, 'task_create.html', {'status_choices': status_choices, 'form': form})
     elif request.method == 'POST':
-        description = request.POST.get('description')
-        status = request.POST.get('status')
-        date_of_completion = request.POST.get('date_of_completion')
-        errors = task_validate(description, status, date_of_completion)
+        form = TaskForm(data=request.POST)
 
-        if errors:
-            return render(request, 'task_create.html', {'status_choices': status_choices, 'errors': errors})
-        else:
-            task = Task.objects.create(description=description, status=status, date_of_completion=date_of_completion)
+        if form.is_valid():
+            task = Task.objects.create(
+                description=form.cleaned_data.get('description'),
+                status=form.cleaned_data.get('status'),
+                date_of_completion=form.cleaned_data.get('date_of_completion')
+            )
             return redirect('index')
+        else:
+            return render(request, 'task_create.html', {'form': form})
 
 
 def task_update_view(request, pk):
     task = get_object_or_404(Task, pk=pk)
     if request.method == 'GET':
-        return render(request, 'task_update.html', {'status_choices': status_choices, 'task': task})
+        form = TaskForm()
+        return render(request, 'task_update.html', {'status_choices': status_choices, 'task': task, 'form': form})
     elif request.method == 'POST':
         description = request.POST.get('description')
         status = request.POST.get('status')
@@ -41,7 +45,8 @@ def task_update_view(request, pk):
         errors = task_validate(task.description, task.status, task.date_of_completion)
 
         if errors:
-            return render(request, 'task_update.html', {'status_choices': status_choices, 'errors': errors, 'task': task})
+            return render(request, 'task_update.html',
+                          {'status_choices': status_choices, 'errors': errors, 'task': task})
         else:
             task.description = description
             task.status = status
@@ -58,6 +63,4 @@ def task_delete_view(request, pk):
         task.delete()
         return redirect('index')
 
-# Create your views here.
-# def task_create_view(request):
-#     return None
+
